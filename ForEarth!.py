@@ -6,7 +6,10 @@ from Character import CutSceneFive, CutSceneSix, CutSceneSeven, CutSceneEight
 pygame.display.set_caption('For Earth!')
 screen = pygame.display.set_mode((1000, 600), 0, 32)
 mainClock = pygame.time.Clock()
-font = pygame.font.SysFont(None, 20)
+font = pygame.font.SysFont(None, 35)
+
+pygame.mixer.music.load('1 AM (Normal).mp3')
+pygame.mixer.music.play(-1)
 
 ##### FADING SCREEEEN #########
 def fade():
@@ -28,6 +31,9 @@ def fade2():
         pygame.time.delay(5)
 # Images
 Earth = pygame.image.load('Earth.png')
+Start = pygame.image.load("Start.png")
+Credits = pygame.image.load('Credits.png')
+Tutorial = pygame.image.load('Tutorial.png')
 hub1 = pygame.image.load('Level 1.png')
 Logo = pygame.image.load('Title Screen2.png')
 trash = pygame.image.load('Trash.png')
@@ -38,6 +44,7 @@ level_five = pygame.image.load('Level 5.png')
 final_screen = pygame.image.load('Final Screen.png')
 bee = pygame.image.load('Bee.png')
 frog = pygame.image.load('Frog.png')
+Earth_Stage0 = pygame.image.load('Earth Stage 0.png')
 Earth_Stage1 = pygame.image.load('Earth Stage 1.png')
 Earth_Stage2 = pygame.image.load('Earth Stage 2.png')
 Earth_Stage3 = pygame.image.load('Earth Stage 3.png')
@@ -205,8 +212,9 @@ def main_menu():
         screen.blit(Logo, (-100, 50))
         mx, my = pygame.mouse.get_pos()
 
-        button_1 = pygame.Rect(50, 300, 300, 75)
+        button_1 = pygame.Rect(50, 250, 300, 75)
         button_2 = pygame.Rect(50, 450, 300, 75)
+        button_3 = pygame.Rect(50, 350, 300, 75)
         if button_1.collidepoint((mx, my)):
             if pygame.MOUSEBUTTONDOWN:
                 fade()
@@ -214,9 +222,12 @@ def main_menu():
         if button_2.collidepoint((mx, my)):
             if pygame.MOUSEBUTTONDOWN:
                 credits()
+        if button_3.collidepoint((mx, my)):
+            if pygame.MOUSEBUTTONDOWN:
+                tutorial()
         pygame.draw.rect(screen, (255, 0, 0), button_1)
         pygame.draw.rect(screen, (255, 0, 0), button_2)
-
+        pygame.draw.rect(screen, (255, 0, 0), button_3)
         pygame.MOUSEBUTTONDOWN = False
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -229,13 +240,14 @@ def main_menu():
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
                     pygame.MOUSEBUTTONDOWN = True
-
-
+        screen.blit(Start, (56, 260))
+        screen.blit(Credits, (56, 465))
+        screen.blit(Tutorial, (56, 365))
         pygame.display.update()
         mainClock.tick(60)
 
 def cutscene():
-    global Earth_Stage1
+    global Earth_Stage0
     class Player(pygame.sprite.Sprite):
 
         def __init__(self):
@@ -282,7 +294,7 @@ def cutscene():
         screen.fill((0, 0, 0))
         player.draw(screen)
         cut_scene_manager.draw()
-        screen.blit(Earth_Stage1, (300, 100))
+        screen.blit(Earth_Stage0, (300, 100))
 
         pygame.display.flip()
 
@@ -335,6 +347,17 @@ def game():
             move_down = False
             move_up = False
             stepIndex = 0
+
+        #PLAYER BOUNDERIES
+        if rect_p.x <= 50:
+            rect_p.x = 50
+        elif rect_p.x >= 915:
+            rect_p.x = 910
+
+        if rect_p.y <= 200:
+            rect_p.y = 200
+        elif rect_p.y >= 450:
+            rect_p.y = 450
 
         for t in trashes:
             if t.colliderect(rect_p):
@@ -405,7 +428,7 @@ def progresscheck1():
     running = True
     while running:
         screen.fill((0, 0, 0))
-        screen.blit(Earth_Stage1, (300, 100))
+        screen.blit(Earth_Stage0, (300, 100))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -549,6 +572,21 @@ def level_2():
         elif rect_b2.y >= 480:
             rect_b2changey = -5
 
+        #PLAYER BOUNDERIES
+        if rect_p.x <= 50:
+            rect_p.x = 50
+        elif rect_p.x >= 915:
+            rect_p.x = 910
+
+        if rect_p.y <= 200:
+            rect_p.y = 200
+        elif rect_p.y >= 450:
+            rect_p.y = 450
+
+        if rect_b.colliderect(rect_p):
+            cutscene3()
+        if rect_b2.colliderect(rect_p):
+            cutscene3()
         if score_value == 120:
             fade()
             progresscheck2()
@@ -622,7 +660,7 @@ def cutscene4():
         player.draw(screen)
         cut_scene_manager.draw()
         screen.blit(Earth_Stage2, (300, 100))
-
+        draw_text('Press [c] to see changes', font, (255, 255, 255), screen, 20, 20)
         pygame.display.flip()
 
 def level3():
@@ -716,10 +754,30 @@ def level3():
         elif rect_bu.y >= 480:
             rect_buchangey = -5
 
+        #PLAYER BOUNDERIES
+        if rect_p.x <= 50:
+            rect_p.x = 50
+        elif rect_p.x >= 915:
+            rect_p.x = 910
+
+        if rect_p.y <= 200:
+            rect_p.y = 200
+        elif rect_p.y >= 450:
+            rect_p.y = 450
+
         for t in trashe:
             if t.colliderect(rect_p):
                 trashe.remove(t)
                 score_value += 10
+
+        if rect_b.colliderect(rect_p):
+            cutscene4()
+        if rect_b2.colliderect(rect_p):
+            cutscene4()
+        if rect_bu.colliderect(rect_p):
+            cutscene4()
+        if rect_bu2.colliderect(rect_p):
+            cutscene4()
         if score_value == 170:
             fade()
             progresscheck3()
@@ -746,6 +804,7 @@ def progresscheck3():
                 if event.key == K_c:
                     fade2()
                     cutscene5()
+        draw_text('Press [c] to see changes', font, (255, 255, 255), screen, 20, 20)
         pygame.display.update()
 def cutscene5():
     global Earth_Stage3
@@ -796,7 +855,7 @@ def cutscene5():
         player.draw(screen)
         cut_scene_manager.draw()
         screen.blit(Earth_Stage3, (300, 100))
-
+        draw_text('Press [c] to see changes', font, (255, 255, 255), screen, 20, 20)
         pygame.display.flip()
 
 def level4():
@@ -911,6 +970,31 @@ def level4():
             if t.colliderect(rect_p):
                 trashse.remove(t)
                 score_value += 10
+
+        if rect_b.colliderect(rect_p):
+            cutscene5()
+        if rect_b2.colliderect(rect_p):
+            cutscene5()
+        if rect_bu.colliderect(rect_p):
+            cutscene5()
+        if rect_bu2.colliderect(rect_p):
+            cutscene5()
+        if rect_b4.colliderect(rect_p):
+            cutscene5()
+        if rect_b3.colliderect(rect_p):
+            cutscene5()
+
+        #PLAYER BOUNDERIES
+        if rect_p.x <= 50:
+            rect_p.x = 50
+        elif rect_p.x >= 915:
+            rect_p.x = 910
+
+        if rect_p.y <= 200:
+            rect_p.y = 200
+        elif rect_p.y >= 450:
+            rect_p.y = 450
+
         if score_value == 200:
             fade()
             progresscheck4()
@@ -939,6 +1023,7 @@ def progresscheck4():
                 if event.key == K_c:
                     fade2()
                     cutscene6()
+        draw_text('Press [c] to see changes', font, (255, 255, 255), screen, 20, 20)
         pygame.display.update()
 def cutscene6():
     global Earth_Stage4
@@ -986,6 +1071,7 @@ def cutscene6():
 
         # Draw objects
         screen.fill((0, 0, 0))
+        draw_text('Press [c] to see changes', font, (255, 255, 255), screen, 20, 20)
         player.draw(screen)
         cut_scene_manager.draw()
         screen.blit(Earth_Stage4, (300, 100))
@@ -1073,6 +1159,17 @@ def level_final():
             rect_b2changey = 5
         elif rect_b2.y >= 480:
             rect_b2changey = -5
+
+        #PLAYER BOUNDERIES
+        if rect_p.x <= 50:
+            rect_p.x = 50
+        elif rect_p.x >= 915:
+            rect_p.x = 910
+
+        if rect_p.y <= 200:
+            rect_p.y = 200
+        elif rect_p.y >= 450:
+            rect_p.y = 450
 
         if score_value == 230:
             fade()
@@ -1196,7 +1293,9 @@ def credits():
     while running:
         screen.fill((0, 0, 0))
 
-        draw_text('How to Play (Press [Esc] to Return)', font, (255, 255, 255), screen, 20, 20)
+        draw_text('Credits (Press [Esc] to Return)', font, (255, 255, 255), screen, 20, 20)
+        draw_text('Lead Developer: Edgar T.', font, (255, 255, 255), screen, 20, 200)
+        draw_text('Lead Designer: Samantha L.', font, (255, 255, 255), screen, 20, 300)
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
@@ -1209,4 +1308,57 @@ def credits():
         pygame.display.update()
         mainClock.tick(60)
 
+def tutorial():
+    running = True
+    while running:
+        screen.fill((0, 0, 0))
+        global move_left, move_up, move_down, move_right, stepIndex, rect_p, score_value
+        # draw_text('Score: ' + str(score_value), font, (255, 255, 255), screen, 20, 20)
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    running = False
+        userInput = pygame.key.get_pressed()
+        if userInput[pygame.K_LEFT]:
+            rect_p.x -= vel
+            move_left = True
+            move_right = False
+            move_down = False
+            move_up = False
+        elif userInput[pygame.K_RIGHT]:
+            rect_p.x += vel
+            move_left = False
+            move_right = True
+            move_down = False
+            move_up = False
+        elif userInput[pygame.K_UP]:
+            rect_p.y -= vel
+            move_left = False
+            move_right = False
+            move_down = False
+            move_up = True
+        elif userInput[pygame.K_DOWN]:
+            rect_p.y += vel
+            move_left = False
+            move_right = False
+            move_down = True
+            move_up = False
+        else:
+            move_left = False
+            move_right = False
+            move_down = False
+            move_up = False
+            stepIndex = 0
+
+        draw_text('Tutorial (Press [Esc] to Return)', font, (255, 255, 255), screen, 20, 20)
+        draw_text('Move Around Using the Arrow Keys', font, (255, 255, 255), screen, 20, 100)
+        draw_text('Collect Trash to clean the Level.', font, (255, 255, 255), screen, 20, 135)
+        draw_text('Once, Level is clean, you move on to the next.', font, (255, 255, 255), screen, 20, 170)
+        draw_text('Avoid the Bees', font, (255, 255, 255), screen, 20, 205)
+        player_move()
+        pygame.display.update()
+        mainClock.tick(60)
 main_menu()
